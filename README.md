@@ -2,7 +2,6 @@
 
 [![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
 
-
 This Project is a part of Data Science Nanodegree Program by Udacity in collaboration with Figure Eight. The initial dataset contains pre-labelled tweet and messages from real-life disaster. The aim of the project is to build a Natural Language Processing tool that categorize messages.
 
 ### Execution:
@@ -32,10 +31,32 @@ This Project is a part of Data Science Nanodegree Program by Udacity in collabor
 
 ### Web App Screenshots:
 
-![](https://github.com/s0umitra/Disaster-Response-Pipeline/blob/master/screenshots/intro.png)
+**The Main Page**
+
+![](https://github.com/s0umitra/Disaster-Response-Pipeline/blob/master/screenshots/main_page.png)
+
+**Sample Message you can type to test the system**
+
+![](https://github.com/s0umitra/Disaster-Response-Pipeline/blob/master/screenshots/sample_input.png)
+
+**After clicking Classify Message, the categories which the message belongs to are shown highlighted in green**
+
+![](https://github.com/s0umitra/Disaster-Response-Pipeline/blob/master/screenshots/sample_output.png)
+
+
+### NoteBooks:
+
+In the data and models folder you can find two jupyter notebook
+
+- ETL Preparation Notebook: learn everything about the implemented ETL pipeline
+- ML Pipeline Preparation Notebook: look at the Machine Learning Pipeline developed with NLTK and Scikit-Learn
+
+You can use these Notebooks to re-train the model or tune it through a dedicated Grid Search section
 
 ### License
 
-[![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](https://github.com/s0umitra/dash-101-wdb/blob/master/LICENSE)
+[![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](https://github.com/s0umitra/Disaster-Response-Pipeline/blob/master/LICENSE)
 
-This software is licenced under [MIT](https://github.com/s0umitra/dash-101-wdb/blob/master/LICENSE)
+This software is licenced under [MIT](https://github.com/s0umitra/Disaster-Response-Pipeline/blob/master/LICENSE)
+
+[![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
