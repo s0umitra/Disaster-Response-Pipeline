@@ -106,6 +106,7 @@ def build_model():
     This function output is a SciKit ML Pipeline that process text messages
     according to NLP best-practice and apply a classifier.
 
+    :return model: SciKit ML Pipeline
     """
     model = Pipeline([
         ('features', FeatureUnion([
@@ -122,43 +123,6 @@ def build_model():
     ])
 
     return model
-
-
-def multioutput_fscore(y_true, y_pred, beta=1):
-    """
-    MultiOutput Fscore
-    
-    This is a performance metric of my own creation.
-    It is a sort of geometric mean of the fbeta_score, computed on each label.
-    
-    It is compatible with multi-label and multi-class problems.
-    It features some peculiarities (geometric mean, 100% removal...) to exclude
-    trivial solutions and deliberatly under-estimate a stangd fbeta_score average.
-    The aim is avoiding issues when dealing with multi-class/multi-label imbalanced cases.
-    
-    It can be used as scorer for GridSearchCV:
-        scorer = make_scorer(multioutput_fscore,beta=1)
-        
-    Arguments:
-        y_true -> labels
-        y_prod -> predictions
-        beta -> beta value of fscore metric
-    
-    Output:
-        f1score -> customized fscore
-    """
-    score_list = []
-    if isinstance(y_pred, pd.DataFrame):
-        y_pred = y_pred.values
-    if isinstance(y_true, pd.DataFrame):
-        y_true = y_true.values
-    for column in range(0, y_true.shape[1]):
-        score = fbeta_score(y_true[:, column], y_pred[:, column], beta, average='weighted')
-        score_list.append(score)
-    f1score_numpy = np.asarray(score_list)
-    f1score_numpy = f1score_numpy[f1score_numpy < 1]
-    f1score = gmean(f1score_numpy)
-    return f1score
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
