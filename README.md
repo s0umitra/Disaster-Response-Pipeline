@@ -33,7 +33,7 @@ This Project is a part of Data Science Nanodegree Program by Udacity in collabor
 
 **The Main Page**
 
-![](https://github.com/s0umitra/Disaster-Response-Pipeline/blob/master/screenshots/main_page.png)
+![](https://github.com/s0umitra/Disaster-Response-Pipeline/blob/master/screenshots/sample_master_full.jpg)
 
 **Sample Message you can type to test the system**
 
@@ -41,7 +41,7 @@ This Project is a part of Data Science Nanodegree Program by Udacity in collabor
 
 **After clicking Classify Message, the categories which the message belongs to are shown highlighted in green**
 
-![](https://github.com/s0umitra/Disaster-Response-Pipeline/blob/master/screenshots/sample_output.png)
+![](https://github.com/s0umitra/Disaster-Response-Pipeline/blob/master/screenshots/sample_go_full.png)
 
 
 ### NoteBooks:

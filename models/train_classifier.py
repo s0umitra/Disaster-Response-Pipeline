@@ -1,6 +1,6 @@
 """
 sample execution command:
-> python train_classifier.py ../data/DisasterResponse.db classifier.pkl
+> python train_classifier.py ../data/s0umDisasterResDB.db classifier.pkl
 
 Arguments:
     1) SQLite db path (containing pre-processed data)
@@ -11,11 +11,14 @@ import sys
 import pandas as pd
 import numpy as np
 import pickle
+
+from sklearn.multiclass import OneVsRestClassifier
+from sklearn.svm import LinearSVC
 from sqlalchemy import create_engine
 import re
 import nltk
 from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
@@ -43,6 +46,9 @@ def load_data(database_filepath):
     df = pd.read_sql_table('df', engine)
     X = df['message']
     Y = df.iloc[:, 4:]
+
+    Y['related'] = Y['related'].map(lambda x: 1 if x == 2 else x)
+
     category_names = Y.columns
 
     return X, Y, category_names
@@ -74,31 +80,6 @@ def tokenize(text):
     return clean_tokens
 
 
-class StartingVerbExtractor(BaseEstimator, TransformerMixin):
-    """
-    Starting Verb Extractor class
-    
-    This class extract the starting verb of a sentence,
-    creating a new feature for the ML classifier
-    """
-
-    def starting_verb(self, text):
-        sentence_list = nltk.sent_tokenize(text)
-        for sentence in sentence_list:
-            pos_tags = nltk.pos_tag(tokenize(sentence))
-            first_word, first_tag = pos_tags[0]
-            if first_tag in ['VB', 'VBP'] or first_word == 'RT':
-                return True
-        return False
-
-    def fit(self, X, y=None):
-        return self
-
-    def transform(self, X):
-        X_tagged = pd.Series(X).apply(self.starting_verb)
-        return pd.DataFrame(X_tagged)
-
-
 def build_model():
     """
     Build Model function
@@ -108,19 +89,22 @@ def build_model():
 
     :return model: SciKit ML Pipeline
     """
-    model = Pipeline([
-        ('features', FeatureUnion([
+    pipeline = Pipeline([
+        ('vect', CountVectorizer(tokenizer=tokenize)),
+        ('tfidf', TfidfTransformer()),
+        ('clf', MultiOutputClassifier(OneVsRestClassifier(LinearSVC())))
+    ], verbose=1)
 
-            ('text_pipeline', Pipeline([
-                ('vect', CountVectorizer(tokenizer=tokenize)),
-                ('tfidf', TfidfTransformer())
-            ])),
+    # hyper-parameter grid
+    parameters = {'vect__ngram_range': ((1, 1), (1, 2)),
+                  'vect__max_df': (0.75, 1.0)
+                  }
 
-            ('starting_verb', StartingVerbExtractor())
-        ])),
-
-        ('clf', MultiOutputClassifier(AdaBoostClassifier()))
-    ])
+    # create model
+    model = GridSearchCV(estimator=pipeline,
+                         param_grid=parameters,
+                         verbose=3,
+                         cv=3)
 
     return model
 
@@ -142,11 +126,11 @@ def evaluate_model(model, X_test, Y_test, category_names):
 
     y_pred = model.predict(X_test)
 
-    Y_pred = pd.DataFrame(data=y_pred,
-                          index=Y_test.index,
-                          columns=category_names)
+    # print classification report
+    print(classification_report(Y_test.values, y_pred, target_names=category_names))
 
-    print(classification_report(Y_test, Y_pred, target_names=category_names))
+    # print accuracy score
+    print('Accuracy: {}'.format(np.mean(Y_test.values == y_pred)))
 
 
 def save_model(model, model_filepath):
@@ -161,8 +145,7 @@ def save_model(model, model_filepath):
     
     """
 
-    filename = model_filepath
-    pickle.dump(model, open(filename, 'wb'))
+    pickle.dump(model, open(model_filepath, 'wb'))
 
 
 def main():
@@ -181,6 +164,7 @@ def main():
     """
 
     if len(sys.argv) == 3:
+
         database_filepath, model_filepath = sys.argv[1:]
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))
         X, Y, category_names = load_data(database_filepath)

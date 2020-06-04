@@ -82,9 +82,16 @@ def index():
                 },
                 'xaxis': {
                     'title': "Genre"
-                }
-            }
+                },
+                'width': 700,
+                'height': 700,
+                'margin': dict(
+                    pad=10,
+                    b=150,
+                ),
+            },
         },
+
         # GRAPH 2 - category graph
         {
             'data': [
@@ -102,7 +109,13 @@ def index():
                 'xaxis': {
                     'title': "Category",
                     'tickangle': 35
-                }
+                },
+                'width': 1000,
+                'height': 700,
+                'margin': dict(
+                    pad=10,
+                    b=150,
+                ),
             }
         }
     ]

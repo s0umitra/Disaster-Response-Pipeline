@@ -46,22 +46,22 @@ def clean_data(df):
     # create a DataFrame of the 36 individual category columns
     categories = df.categories.str.split(pat=';', expand=True)
     # select the first row of the categories DataFrame
-    first_row = categories.iloc[0, :]
+    row = categories.iloc[0,:].values
     # use this row to extract a list of new column names for categories.
-    col_names = first_row.apply(lambda x: x[:-2])
+    new_cols = [r[:-2] for r in row]
     # rename the columns of `categories` DataFrame
-    categories.columns = col_names
+    categories.columns = new_cols
 
     for column in categories:
         # set each value to be the last character of the string
         categories[column] = categories[column].str[-1]
         # convert column from string to numeric
-        categories[column] = categories[column].astype(np.int)
+        categories[column] = pd.to_numeric(categories[column])
 
     # drop the original categories column from 'df' DataFrame
     df.drop('categories', axis=1, inplace=True)
     # concatenate the original DataFrame with the new 'categories' DataFrame
-    df = pd.concat([df, categories], axis=1)
+    df[categories.columns] = categories
     # drop duplicates
     df.drop_duplicates(inplace=True)
 
