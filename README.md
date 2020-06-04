@@ -35,7 +35,7 @@ This Project is a part of Data Science Nanodegree Program by Udacity in collabor
 
 ![](https://github.com/s0umitra/Disaster-Response-Pipeline/blob/master/screenshots/sample_master_full.jpg)
 
-*Sample **Message** ***you can type to test the system*
+*Sample **Message** you can type to test the system*
 
 ![](https://github.com/s0umitra/Disaster-Response-Pipeline/blob/master/screenshots/sample_input.png)
 
